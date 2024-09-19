@@ -1,4 +1,17 @@
 {
-	"name": "LegendaryTools.Persistence",
-	"references":[ "GUID:2247f345c1389cb428906dc038800b93" ]
+    "name": "LegendaryTools.Persistence",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2247f345c1389cb428906dc038800b93",
+        "GUID:0d3024bdc04b16a47b125edb3a978e77"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

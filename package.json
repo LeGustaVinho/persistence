@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "com.legustavinho.legendary-tools-common": "1.1.1",
+    "com.legustavinho.legendary-tools-nido-serializer": "1.0.0",
     "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
   "author": {

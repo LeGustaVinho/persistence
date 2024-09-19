@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 #if ODIN_INSPECTOR
 using Sirenix.Serialization;
-#elif ODIN_SERIALIZER
+#elif NIDO_SERIALIZER
 using OdinSerializer;
 #endif
 using UnityEngine;
@@ -26,7 +26,7 @@ namespace LegendaryTools.Persistence
 
         public string Serialize(Dictionary<Type, DataTable> dataTable)
         {
-#if ODIN_INSPECTOR || ODIN_SERIALIZER
+#if ODIN_INSPECTOR || NIDO_SERIALIZER
             byte[] bytesSerializados = SerializationUtility.SerializeValue(dataTable, DataFormat.JSON);
             return Encoding.UTF8.GetString(bytesSerializados);
 #else
@@ -36,7 +36,7 @@ namespace LegendaryTools.Persistence
 
         public Dictionary<Type, DataTable> Deserialize(string serializedData)
         {
-#if ODIN_INSPECTOR || ODIN_SERIALIZER
+#if ODIN_INSPECTOR || NIDO_SERIALIZER
             if (string.IsNullOrEmpty(serializedData)) return new Dictionary<Type, DataTable>();
             byte[] bytesDesserializados = Encoding.UTF8.GetBytes(serializedData);
             return SerializationUtility.DeserializeValue<Dictionary<Type, DataTable>>(bytesDesserializados, 
@@ -45,14 +45,5 @@ namespace LegendaryTools.Persistence
             return null;
 #endif
         }
-
-#if !ODIN_INSPECTOR && !ODIN_SERIALIZER
-        [ContextMenu("ImportOdinSerializer")]
-        public void ImportOdinSerializer()
-        {
-            UnityEditor.PackageManager.Client.Add(
-                "https://github.com/LeGustaVinho/odin-serializer.git?path=OdinSerializer");
-        }
-#endif
     }
 }
