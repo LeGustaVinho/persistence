@@ -12,6 +12,7 @@ namespace LegendaryTools.Persistence
         string Set<T>(T dataToSave, string id = Persistence.EMPTY_ID, int version = 0);
         T Get<T>(string id);
         (int, int, DateTime) GetMetadata<T>();
+        Dictionary<string, T> GetCollection<T>();
         bool Delete<T>(string id);
         bool Contains<T>(string id);
         void Save();
@@ -136,6 +137,22 @@ namespace LegendaryTools.Persistence
             }
 
             return (-1, -1, default);
+        }
+
+        public Dictionary<string, T> GetCollection<T>()
+        {
+            Type dataType = typeof(T);
+            Dictionary<string, T> data = new Dictionary<string, T>();
+
+            if (DataTables.TryGetValue(dataType, out DataTable dataTable))
+            {
+                foreach (KeyValuePair<string, object> pair in dataTable.IdentifiedEntries)
+                {
+                    data.Add(pair.Key, (T)pair.Value);
+                }
+            }
+            
+            return data;
         }
 
         public bool Delete<T>(string id)
