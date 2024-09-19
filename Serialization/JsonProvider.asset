@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: JsonProvider
   m_EditorClassIdentifier: 
   FormatType: 1
+  TypeNameHandling: 4
+  PreserveReferencesHandling: 0
   JsonConverterProviders: []

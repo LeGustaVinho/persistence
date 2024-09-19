@@ -9,11 +9,15 @@ namespace LegendaryTools.Persistence
     public class JsonProvider : ScriptableObject, IStringSerializationProvider
     {
         public Formatting FormatType;
+        public TypeNameHandling TypeNameHandling = TypeNameHandling.None;
+        public PreserveReferencesHandling PreserveReferencesHandling = PreserveReferencesHandling.None;
         public List<JsonConverterProvider> JsonConverterProviders = new List<JsonConverterProvider>();
         public string Extension => "json";
 
         private readonly JsonSerializerSettings settings = new()
         {
+            TypeNameHandling = TypeNameHandling.None,
+            PreserveReferencesHandling = PreserveReferencesHandling.None,
             Converters = new List<JsonConverter>
             {
                 new Vector3Converter(),
@@ -47,6 +51,8 @@ namespace LegendaryTools.Persistence
             {
                 settings.Converters.Add(jsonConverterProvider.JsonConverter);
             }
+            settings.TypeNameHandling = TypeNameHandling;
+            settings.PreserveReferencesHandling = PreserveReferencesHandling;
             isInitialized = true;
         }
         

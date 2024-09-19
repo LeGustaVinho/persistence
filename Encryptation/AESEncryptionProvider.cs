@@ -72,8 +72,7 @@ namespace LegendaryTools.Persistence
 
         public byte[] Encrypt(byte[] data)
         {
-            if (data == null || data.Length == 0)
-                throw new ArgumentNullException(nameof(data));
+            if (data == null || data.Length == 0) return Array.Empty<byte>();
 
             Initialize();
             
@@ -106,8 +105,9 @@ namespace LegendaryTools.Persistence
 
         public byte[] Decrypt(byte[] data)
         {
-            if (data == null || data.Length == 0)
-                throw new ArgumentNullException(nameof(data));
+            if (data == null || data.Length == 0) return Array.Empty<byte>();
+            
+            Initialize();
 
             // Extrair o salt e o IV dos dados
             byte[] salt = new byte[SaltSize];
