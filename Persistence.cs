@@ -175,14 +175,18 @@ namespace LegendaryTools.Persistence
             {
                 case IStringSerializationProvider stringSerializationProvider when storable is IStringStorable stringStorable:
                 {
+                    OnBeforeSerialize();
                     string stringSerializedData = stringSerializationProvider.Serialize(DataTables);
+                    OnAfterSerialized();
                     stringSerializedData = SavePostProcessString(stringSerializedData);
                     stringStorable.Save(stringSerializedData);
                     break;
                 }
                 case IBinarySerializationProvider binarySerializationProvider when storable is IBinaryStorable binaryStorable:
                 {
+                    OnBeforeSerialize();
                     byte[] binarySerializationData = binarySerializationProvider.Serialize(DataTables);
+                    OnAfterSerialized();
                     binarySerializationData = SavePostProcessBinary(binarySerializationData);
                     binaryStorable.Save(binarySerializationData);
                     break;
@@ -202,14 +206,18 @@ namespace LegendaryTools.Persistence
                 {
                     string deserializedStringData = stringStorable.Load();
                     deserializedStringData = LoadPostProcessString(deserializedStringData);
+                    OnBeforeDeserialize();
                     DataTables = stringSerializationProvider.Deserialize(deserializedStringData);
+                    OnAfterDeserialize();
                     break;
                 }
                 case IBinarySerializationProvider binarySerializationProvider when storable is IBinaryStorable binaryStorable:
                 {
                     byte[] deserializedBinaryData = binaryStorable.Load();
                     deserializedBinaryData = LoadPostProcessBinary(deserializedBinaryData);
+                    OnBeforeDeserialize();
                     DataTables = binarySerializationProvider.Deserialize(deserializedBinaryData);
+                    OnAfterDeserialize();
                     break;
                 }
             }
@@ -227,15 +235,18 @@ namespace LegendaryTools.Persistence
             {
                 case IStringSerializationProvider stringSerializationProvider when storable is IStringStorable stringStorable:
                 {
+                    OnBeforeSerialize();
                     string stringSerializedData = stringSerializationProvider.Serialize(DataTables);
+                    OnAfterSerialized();
                     stringSerializedData = SavePostProcessString(stringSerializedData);
                     await stringStorable.SaveAsync(stringSerializedData);
-                    
                     break;
                 }
                 case IBinarySerializationProvider binarySerializationProvider when storable is IBinaryStorable binaryStorable:
                 {
+                    OnBeforeSerialize();
                     byte[] binarySerializationData = binarySerializationProvider.Serialize(DataTables);
+                    OnAfterSerialized();
                     binarySerializationData = SavePostProcessBinary(binarySerializationData);
                     await binaryStorable.SaveAsync(binarySerializationData);
                     break;
@@ -258,14 +269,18 @@ namespace LegendaryTools.Persistence
                 {
                     string deserializedStringData = await stringStorable.LoadAsync();
                     deserializedStringData = LoadPostProcessString(deserializedStringData);
+                    OnBeforeDeserialize();
                     DataTables = stringSerializationProvider.Deserialize(deserializedStringData);
+                    OnAfterDeserialize();
                     break;
                 }
                 case IBinarySerializationProvider binarySerializationProvider when storable is IBinaryStorable binaryStorable:
                 {
                     byte[] deserializedBinaryData = await binaryStorable.LoadAsync();
                     deserializedBinaryData = LoadPostProcessBinary(deserializedBinaryData);
+                    OnBeforeDeserialize();
                     DataTables = binarySerializationProvider.Deserialize(deserializedBinaryData);
+                    OnAfterDeserialize();
                     break;
                 }
             }
@@ -363,6 +378,54 @@ namespace LegendaryTools.Persistence
                 deserializedStringData = Encoding.UTF8.GetString(stringDeserializedDataBytes);
 
             return deserializedStringData;
+        }
+
+        public void OnBeforeSerialize()
+        {
+            foreach (KeyValuePair<Type, DataTable> pairTable in DataTables)
+            {
+                foreach (KeyValuePair<string, object> pairData in pairTable.Value.IdentifiedEntries)
+                {
+                    if (pairData.Value is IPersistenceCallback persistenceCallback)
+                        persistenceCallback.OnBeforeSerialize();
+                }
+            }
+        }
+
+        public void OnAfterSerialized()
+        {
+            foreach (KeyValuePair<Type, DataTable> pairTable in DataTables)
+            {
+                foreach (KeyValuePair<string, object> pairData in pairTable.Value.IdentifiedEntries)
+                {
+                    if (pairData.Value is IPersistenceCallback persistenceCallback)
+                        persistenceCallback.OnAfterSerialized();
+                }
+            }
+        }
+
+        public void OnBeforeDeserialize()
+        {
+            foreach (KeyValuePair<Type, DataTable> pairTable in DataTables)
+            {
+                foreach (KeyValuePair<string, object> pairData in pairTable.Value.IdentifiedEntries)
+                {
+                    if (pairData.Value is IPersistenceCallback persistenceCallback)
+                        persistenceCallback.OnBeforeDeserialize();
+                }
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
+            foreach (KeyValuePair<Type, DataTable> pairTable in DataTables)
+            {
+                foreach (KeyValuePair<string, object> pairData in pairTable.Value.IdentifiedEntries)
+                {
+                    if (pairData.Value is IPersistenceCallback persistenceCallback)
+                        persistenceCallback.OnAfterDeserialize();
+                }
+            }
         }
     }
 }
