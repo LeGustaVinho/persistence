@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace LegendaryTools.Persistence
 {
-    
-    
     public interface ISerializationProvider
     {
         public string Extension { get; }
