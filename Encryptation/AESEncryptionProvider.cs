@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace LegendaryTools.Persistence
@@ -16,7 +15,7 @@ namespace LegendaryTools.Persistence
         private string keyString;
 
 #if ODIN_INSPECTOR
-        [ShowInInspector]
+        [Sirenix.OdinInspector.ShowInInspector]
 #endif
         public string KeyString
         {
