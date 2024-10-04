@@ -1,11 +1,12 @@
 {
   "name": "com.legustavinho.legendary-tools-persistence",
   "displayName": "Legendary Tools - Persistence",
-  "version": "1.0.0",
+  "description": "An easy-to-use and extensible data persistence system for Unity, inspired by PlayerPrefs. This system provides a flexible API with support for custom serialization, storage, and encryption providers. All data is compressed using Gzip to optimize storage space.",
+  "version": "1.0.1",
   "unity": "2019.4",
-  "type": "library",
   "keywords": [],
   "category": "Extensions",
+  "documentationUrl": "https://github.com/LeGustaVinho/persistence/blob/main/README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LeGustaVinho/persistence.git"

@@ -9,10 +9,10 @@ namespace LegendaryTools.Persistence
         order = 0)]
     public class AesEncryptionProvider : ScriptableObject, IEncryptionProvider
     {
-#if !ODIN_INSPECTOR
-        [SerializeField]
+#if ODIN_INSPECTOR
+        [HideInInspector]
 #endif
-        private string keyString;
+        [SerializeField] private string keyString;
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.ShowInInspector]
