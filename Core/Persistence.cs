@@ -40,7 +40,7 @@ namespace LegendaryTools.Persistence
             Load();
         }
 
-        public string Set<T>(T dataToSave, string id = EMPTY_ID, int version = -1)
+        public string Set<T>(T dataToSave, string id = EMPTY_ID, int version = -1, bool autoSave = false)
         {
             DataTable dataTable;
             Type dataType = typeof(T);
@@ -86,6 +86,9 @@ namespace LegendaryTools.Persistence
             dataTable.Revision++;
             dataTable.Timestamp = DateTime.UtcNow;
             dataTable.Version = version;
+            
+            if(autoSave)
+                Save();
 
             return id;
         }
@@ -131,7 +134,7 @@ namespace LegendaryTools.Persistence
             return data;
         }
 
-        public bool Delete<T>(string id)
+        public bool Delete<T>(string id, bool autoSave = false)
         {
             Type dataType = typeof(T);
             if (DataTables.TryGetValue(dataType, out DataTable dataTable))
@@ -143,6 +146,9 @@ namespace LegendaryTools.Persistence
                     return true;
                 }
             }
+            
+            if(autoSave)
+                Save();
 
             return false;
         }
@@ -164,6 +170,8 @@ namespace LegendaryTools.Persistence
 #endif
         public void Save()
         {
+            if (IsBusy) return;
+            IsBusy = true;
             switch (serializationProvider)
             {
                 case IStringSerializationProvider stringSerializationProvider when storable is IStringStorable stringStorable:
@@ -185,6 +193,7 @@ namespace LegendaryTools.Persistence
                     break;
                 }
             }
+            IsBusy = false;
         }
 
 #if ODIN_INSPECTOR
