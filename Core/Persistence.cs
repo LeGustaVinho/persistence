@@ -40,10 +40,11 @@ namespace LegendaryTools.Persistence
             Load();
         }
 
-        public string Set<T>(T dataToSave, string id = EMPTY_ID, int version = -1, bool autoSave = false)
+        public string Set<T>(T dataToSave, object id = null, int version = -1, bool autoSave = false)
         {
             DataTable dataTable;
             Type dataType = typeof(T);
+            string currentId = id == null ? Guid.NewGuid().ToString() : id.ToString();
             if (DataTables.TryGetValue(dataType, out DataTable table))
             {
                 dataTable = table;
@@ -63,48 +64,40 @@ namespace LegendaryTools.Persistence
                 if (version < dataTable.Version)
                 {
                     Debug.LogError($"[Persistence:Set({dataToSave.GetType()}, {id}, {version})] Downgrade DataTable version is not supported, current version {dataTable.Version}");
-                    return id;
+                    return currentId;
                 }
             }
 
-            if (dataTable.IdentifiedEntries.ContainsKey(id))
+            if (dataTable.IdentifiedEntries.ContainsKey(currentId))
             {
-                dataTable.IdentifiedEntries[id] = dataToSave;
-                RaiseEvent<T>(PersistenceAction.Update, id, dataToSave);
+                dataTable.IdentifiedEntries[currentId] = dataToSave;
+                RaiseEvent<T>(PersistenceAction.Update, currentId, dataToSave);
             }
             else
             {
-                if (string.IsNullOrEmpty(id))
-                {
-                    id = Guid.NewGuid().ToString();
-                }
-                
-                dataTable.IdentifiedEntries.Add(id, dataToSave);
-                RaiseEvent<T>(PersistenceAction.Add, id, dataToSave);
+                dataTable.IdentifiedEntries.Add(currentId, dataToSave);
+                RaiseEvent<T>(PersistenceAction.Add, currentId, dataToSave);
             }
 
             dataTable.Revision++;
             dataTable.Timestamp = DateTime.UtcNow;
             dataTable.Version = version;
             
-            if(autoSave)
-                Save();
-
-            return id;
+            if(autoSave) Save();
+            return currentId;
         }
 
-        public T Get<T>(string id)
+        public T Get<T>(object id, T defaultValue = default)
         {
+            if (id == null) return defaultValue;
             Type dataType = typeof(T);
             if (DataTables.TryGetValue(dataType, out DataTable dataTable))
             {
-                if (dataTable.IdentifiedEntries.TryGetValue(id, out object data))
-                {
+                if (dataTable.IdentifiedEntries.TryGetValue(id.ToString(), out object data))
                     return (T)data;
-                }
             }
 
-            return default;
+            return defaultValue;
         }
 
         public (int, int, DateTime) GetMetadata<T>()
@@ -134,15 +127,17 @@ namespace LegendaryTools.Persistence
             return data;
         }
 
-        public bool Delete<T>(string id, bool autoSave = false)
+        public bool Delete<T>(object id, bool autoSave = false)
         {
+            if (id == null) return false;
             Type dataType = typeof(T);
+            string currentId = id.ToString();
             if (DataTables.TryGetValue(dataType, out DataTable dataTable))
             {
-                if (dataTable.IdentifiedEntries.ContainsKey(id))
+                if (dataTable.IdentifiedEntries.ContainsKey(currentId))
                 {
-                    RaiseEvent<T>(PersistenceAction.Delete, id, dataTable.IdentifiedEntries[id]);
-                    dataTable.IdentifiedEntries.Remove(id);
+                    RaiseEvent<T>(PersistenceAction.Delete, currentId, dataTable.IdentifiedEntries[currentId]);
+                    dataTable.IdentifiedEntries.Remove(currentId);
                     return true;
                 }
             }
@@ -153,12 +148,12 @@ namespace LegendaryTools.Persistence
             return false;
         }
 
-        public bool Contains<T>(string id)
+        public bool Contains<T>(object id)
         {
             Type dataType = typeof(T);
             if (DataTables.TryGetValue(dataType, out DataTable dataTable))
             {
-                return dataTable.IdentifiedEntries.ContainsKey(id);
+                return dataTable.IdentifiedEntries.ContainsKey(id.ToString());
             }
             
             return false;

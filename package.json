@@ -2,7 +2,7 @@
   "name": "com.legustavinho.legendary-tools-persistence",
   "displayName": "Legendary Tools - Persistence",
   "description": "An easy-to-use and extensible data persistence system for Unity, inspired by PlayerPrefs. This system provides a flexible API with support for custom serialization, storage, and encryption providers. All data is compressed using Gzip to optimize storage space.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "unity": "2019.4",
   "keywords": [],
   "category": "Extensions",
